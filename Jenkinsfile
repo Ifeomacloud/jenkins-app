@@ -4,9 +4,10 @@ pipeline {
         NETLIFY_SITE_ID = 'f1664910-c877-4b59-9b70-f9598dc4dbdb'
         NETLIFY_AUTH_TOKEN = credentials('netlify_token')
     }
+
     stages {
         stage('Build') {
-            agent { 
+            agent {
                 docker {
                     image 'node:18-alpine'
                     reuseNode true
@@ -27,7 +28,7 @@ pipeline {
         stage('Tests') {
             parallel {
                 stage('Unit tests') {
-                    agent { 
+                    agent {
                         docker {
                             image 'node:18-alpine'
                             reuseNode true
@@ -49,7 +50,7 @@ pipeline {
         }
 
         stage('E2E') {
-            agent { 
+            agent {
                 docker {
                     image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
                     reuseNode true
@@ -63,13 +64,20 @@ pipeline {
                     npx playwright test --reporter=html
                 '''    
             } 
+            post {
+                always {
+                    publishHTML([
+                        allowMissing: false, 
+                        alwaysLinkToLastBuild: false, 
+                        keepAll: false, 
+                        reportDir: 'path/to/report', 
+                        reportFiles: 'index.html', 
+                        reportName: 'HTML Report'
+                    ])
+                }
+            }
         }
-        
-           post {
-              always {
-              }   publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'path/to/report', reportFiles: 'index.html', reportName: 'HTML Report'])
-        }
-    }
+
         stage('Deploy') {  
             agent {
                 docker {
@@ -87,6 +95,4 @@ pipeline {
             }
         }
     }
-
-    
 }
