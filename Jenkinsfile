@@ -70,7 +70,7 @@ pipeline {
                         allowMissing: false, 
                         alwaysLinkToLastBuild: false, 
                         keepAll: false, 
-                        reportDir: 'path/to/report', 
+                        reportDir: 'build', 
                         reportFiles: 'index.html', 
                         reportName: 'HTML Report'
                     ])
