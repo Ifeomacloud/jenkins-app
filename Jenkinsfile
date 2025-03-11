@@ -43,7 +43,7 @@ pipeline {
             }
             post {
                 always {
-                    junit 'jest-results/junit.xml'
+                    junit 'test-results/junit.xml'
                 }
             }
         }
@@ -64,7 +64,12 @@ pipeline {
                 '''    
             } 
         }
-
+        
+        post {
+        always {
+            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'path/to/report', reportFiles: 'index.html', reportName: 'HTML Report'])
+        }
+    }
         stage('Deploy') {  
             agent {
                 docker {
@@ -83,9 +88,5 @@ pipeline {
         }
     }
 
-    post {
-        always {
-            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'path/to/report', reportFiles: 'index.html', reportName: 'HTML Report'])
-        }
-    }
+    
 }
